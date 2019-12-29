@@ -1,0 +1,7 @@
+.checked {
+  text-decoration: line-through;
+}
+
+.select {
+  background-color: #ccc;
+}
