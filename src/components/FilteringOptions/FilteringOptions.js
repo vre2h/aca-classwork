@@ -6,38 +6,27 @@ const FILTER_STATES = {
   completed: "completed"
 };
 
-class FilteringOptions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    const { filter } = this.props;
-
-    return (
-      <div>
-        <button
-          className={filter === FILTER_STATES.all ? "select" : ""}
-          onClick={() => this.props.onFilter(FILTER_STATES.all)}
-        >
-          All
-        </button>
-        <button
-          className={filter === FILTER_STATES.active ? "select" : ""}
-          onClick={() => this.props.onFilter(FILTER_STATES.active)}
-        >
-          Active
-        </button>
-        <button
-          className={filter === FILTER_STATES.completed ? "select" : ""}
-          onClick={() => this.props.onFilter(FILTER_STATES.completed)}
-        >
-          Completed
-        </button>
-      </div>
-    );
-  }
+export default function FilteringOptions({ filter, onFilter }) {
+  return (
+    <div>
+      <button
+        className={filter === FILTER_STATES.all ? "select" : ""}
+        onClick={() => onFilter(FILTER_STATES.all)}
+      >
+        All
+      </button>
+      <button
+        className={filter === FILTER_STATES.active ? "select" : ""}
+        onClick={() => onFilter(FILTER_STATES.active)}
+      >
+        Active
+      </button>
+      <button
+        className={filter === FILTER_STATES.completed ? "select" : ""}
+        onClick={() => onFilter(FILTER_STATES.completed)}
+      >
+        Completed
+      </button>
+    </div>
+  );
 }
-
-export default FilteringOptions;
