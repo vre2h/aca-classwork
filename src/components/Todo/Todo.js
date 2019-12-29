@@ -3,6 +3,7 @@ import React from "react";
 import Input from "../Input/Input";
 
 import "./todo.css";
+import FilteringOptions from "../FilteringOptions/FilteringOptions";
 
 const FILTER_STATES = {
   all: "All",
@@ -34,7 +35,39 @@ export default class Todo extends React.Component {
   onTodoSelect = activeId => {
     this.setState(state => ({
       todos: state.todos.map(todo =>
-        todo.id === activeId ? { ...todo, isComplete: !todo.isComplete } : todo
+        todo.id === activeId
+          ? { ...todo, isComplete: !todo.isComplete, isEdit: false }
+          : todo
+      )
+    }));
+  };
+
+  onTodoEdit = activeId => {
+    this.setState(state => ({
+      todos: state.todos.map(todo =>
+        todo.id === activeId ? { ...todo, isEdit: true } : todo
+      )
+    }));
+  };
+
+  onItemInputChange = (id, e) => {
+    const { value } = e.target;
+
+    this.setState(state => ({
+      todos: state.todos.map(todo =>
+        todo.id === id ? { ...todo, name: value } : todo
+      )
+    }));
+  };
+
+  onItemKeyPress = (id, e) => {
+    const isEnter = e.key === "Enter";
+
+    this.setState(state => ({
+      todos: state.todos.map(todo =>
+        todo.id === id
+          ? { ...todo, isEdit: isEnter ? false : todo.isEdit }
+          : todo
       )
     }));
   };
@@ -67,37 +100,24 @@ export default class Todo extends React.Component {
         <Input onTodoAdd={this.onTodoAdd} />
         <section>
           <ul>
-            {normalizedTodos.map(({ name, id, isComplete }) => (
-              <li
-                className={isComplete ? "checked" : ""}
-                onClick={() => this.onTodoSelect(id)}
-                key={id}
-              >
-                {name}
+            {normalizedTodos.map(({ name, id, isComplete, isEdit }) => (
+              <li key={id} className={isComplete ? "checked" : ""}>
+                <input type="checkbox" onClick={() => this.onTodoSelect(id)} />
+
+                {isEdit ? (
+                  <input
+                    value={name}
+                    onChange={e => this.onItemInputChange(id, e)}
+                    onKeyDown={e => this.onItemKeyPress(id, e)}
+                  />
+                ) : (
+                  <span onClick={() => this.onTodoEdit(id)}>{name}</span>
+                )}
               </li>
             ))}
           </ul>
-          <div>
-            <button
-              className={filter === FILTER_STATES.all ? "select" : ""}
-              onClick={() => this.onFilter(FILTER_STATES.all)}
-            >
-              All
-            </button>
-            <button
-              className={filter === FILTER_STATES.active ? "select" : ""}
-              onClick={() => this.onFilter(FILTER_STATES.active)}
-            >
-              Active
-            </button>
-            <button
-              className={filter === FILTER_STATES.completed ? "select" : ""}
-              onClick={() => this.onFilter(FILTER_STATES.completed)}
-            >
-              Completed
-            </button>
-          </div>
         </section>
+        <FilteringOptions filter={filter} onFilter={this.onFilter} />
       </div>
     );
   }
